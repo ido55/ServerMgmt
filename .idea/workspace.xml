@@ -4,29 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66d25d4d-ac2b-4a80-a21c-f70bbe9f0b7c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/ServerMgmt.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/agent/config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/agent/core.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/agent/executor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/agent/monitor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/routes.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/run.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/templates/base.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/templates/details.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/templates/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/templates/scripts.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DBapplication/templates/scripts_summary.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+    <list default="true" id="66d25d4d-ac2b-4a80-a21c-f70bbe9f0b7c" name="Changes" comment="FlaskProject">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DBapplication/instance/testDb.db" beforeDir="false" afterPath="$PROJECT_DIR$/DBapplication/instance/testDb.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +39,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "idotau55"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:ido55/ServerMgmt.git",
+    "accountId": "4d7f55ed-4f8b-4264-accf-b1446df321c2"
+  }
+}]]></component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -88,7 +80,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/home/ido/PyCharmProjects/ServerMgmt",
     "node.js.detected.package.eslint": "true",
@@ -130,12 +122,36 @@
       <workItem from="1775406884787" duration="3914000" />
       <workItem from="1775472647138" duration="4691000" />
       <workItem from="1775491086710" duration="2601000" />
-      <workItem from="1775548107933" duration="15451000" />
+      <workItem from="1775548107933" duration="16534000" />
     </task>
+    <task id="LOCAL-00001" summary="FlaskProject">
+      <option name="closed" value="true" />
+      <created>1775760084066</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1775760084066</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="FlaskProject" />
+    <option name="LAST_COMMIT_MESSAGE" value="FlaskProject" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ServerMgmt$routes.coverage" NAME="routes Coverage Results" MODIFIED="1775332743930" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/DBapplication" />
