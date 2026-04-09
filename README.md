@@ -100,3 +100,4 @@ The agent needs a `config.json` file to know where to connect.
 
 ### Monitoring
 The main dashboard updates automatically every time an agent sends a heartbeat (every 30 seconds), showing current CPU, RAM, and Disk metrics.
+# ServerMgmt
