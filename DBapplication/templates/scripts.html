@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block title %} Scripts {% endblock %}
+
+{% block content %}
+<h1>Scripts</h1>
+
+<style>
+  .page-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    background: #fafafa;
+  }
+
+  .script-item {
+    border-bottom: 1px solid #e5e5e5;
+    padding: 12px 0;
+  }
+
+  .script-actions a,
+  .script-actions button {
+    margin-right: 8px;
+  }
+
+  .form-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .form-grid input,
+  .form-grid select,
+  .form-grid textarea {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  .form-grid textarea {
+    min-height: 160px;
+    resize: vertical;
+    font-family: monospace;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .btn {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: #2563eb;
+    color: white;
+  }
+
+  .btn-danger {
+    background: #dc2626;
+    color: white;
+  }
+
+  .btn-secondary {
+    background: #6b7280;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .muted {
+    color: #666;
+    font-size: 0.95rem;
+  }
+</style>
+
+<div class="page-wrap">
+  <div class="card">
+    <h2>{% if edit_script %}Edit Script{% else %}New Script{% endif %}</h2>
+
+    <form
+      action="{% if edit_script %}{{ url_for('edit_script', pid=edit_script.pid) }}{% else %}{{ url_for('scripts') }}{% endif %}"
+      method="post"
+    >
+      <div class="form-grid">
+        <div>
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required
+                 value="{% if edit_script %}{{ edit_script.name }}{% endif %}">
+        </div>
+
+        <div>
+          <label for="description">Description</label>
+          <input type="text" id="description" name="description"
+                 value="{% if edit_script %}{{ edit_script.description }}{% endif %}">
+        </div>
+
+        <div>
+          <label for="os_target">OS Target</label>
+          <select id="os_target" name="os_target" required>
+            <option value="">-- Select OS Target --</option>
+            <option value="windows" {% if edit_script and edit_script.os_taget == 'windows' %}selected{% endif %}>Windows</option>
+            <option value="linux" {% if edit_script and edit_script.os_taget == 'linux' %}selected{% endif %}>Linux</option>
+            <option value="both" {% if edit_script and edit_script.os_taget == 'both' %}selected{% endif %}>Both</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="command">Command</label>
+          <textarea id="command" name="command" required
+                    placeholder="Enter the command here...">{% if edit_script %}{{ edit_script.command }}{% endif %}</textarea>
+        </div>
+
+        <div>
+          <label>
+            <input type="checkbox" name="is_active" {% if not edit_script or edit_script.is_active %}checked{% endif %}>
+            Active
+          </label>
+        </div>
+
+        <div style="background: #f0fdf4; padding: 12px; border-radius: 6px; border: 1px solid #dcfce7;">
+          <label style="display: block; margin-bottom: 8px; font-weight: bold;">
+            <input type="checkbox" name="use_sudo" id="use_sudo" {% if edit_script and edit_script.use_sudo %}checked{% endif %} onchange="toggleSudoPassword()">
+            Use Sudo (Linux only)
+          </label>
+          <div id="sudo_password_container" style="display: {% if edit_script and edit_script.use_sudo %}block{% else %}none{% endif %};">
+            <label for="sudo_password">Sudo Password</label>
+            <input type="password" id="sudo_password" name="sudo_password" value="{% if edit_script %}{{ edit_script.sudo_password }}{% endif %}" placeholder="Optional: stored for sudo -S">
+            <p class="muted" style="margin-top: 4px; font-size: 0.8rem;">Note: This is sent to the agent to allow elevated commands.</p>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <button class="btn btn-primary" type="submit">
+            {% if edit_script %}Save Changes{% else %}Create Script{% endif %}
+          </button>
+
+          {% if edit_script %}
+            <a class="btn btn-secondary" href="{{ url_for('scripts') }}">Cancel Edit</a>
+          {% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Existing Scripts</h2>
+
+    {% if scripts and scripts|length > 0 %}
+      {% for script in scripts %}
+        <div class="script-item">
+          <h3>{{ script.name }}</h3>
+          <p class="muted">{{ script.description }}</p>
+          <p><strong>OS Target:</strong> {{ script.os_taget }}</p>
+          <p><strong>Active:</strong> {{ 'Yes' if script.is_active else 'No' }}</p>
+          <pre style="white-space: pre-wrap; background: #f4f4f4; padding: 10px; border-radius: 6px;">{{ script.command }}</pre>
+
+          <div class="script-actions">
+            <a class="btn btn-secondary" href="{{ url_for('edit_script', pid=script.pid) }}">Edit</a>
+            <form action="{{ url_for('delete_script', pid=script.pid) }}" method="post" style="display:inline;">
+              <button class="btn btn-danger" type="submit" onclick="return confirm('Delete this script?')">Delete</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No scripts found.</p>
+    {% endif %}
+  </div>
+</div>
+<script>
+  function toggleSudoPassword() {
+    const useSudo = document.getElementById('use_sudo').checked;
+    document.getElementById('sudo_password_container').style.display = useSudo ? 'block' : 'none';
+  }
+</script>
+{% endblock %}

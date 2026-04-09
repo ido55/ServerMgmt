@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %} Server Details {% endblock %}
+{% block content %}
+<style>
+    .container { max-width: 1000px; margin: 0 auto; padding: 20px; font-family: sans-serif; }
+    .card { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .stats-card { background: #f8fafc; border-left: 4px solid #3b82f6; }
+    .job-item { border-bottom: 1px solid #eee; padding: 10px 0; }
+    .job-status { font-weight: bold; text-transform: uppercase; font-size: 0.8rem; }
+    .status-completed { color: #10b981; }
+    .status-running { color: #3b82f6; }
+    .status-failed { color: #ef4444; }
+    .status-queued { color: #f59e0b; }
+    pre { background: #1e293b; color: #f8fafc; padding: 15px; border-radius: 6px; overflow-x: auto; font-size: 0.9rem; }
+    .btn { padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    .btn-edit { background: #64748b; color: white; }
+</style>
+
+<div class="container">
+    <div class="card">
+        <h1>Server: {{ server.name }}</h1>
+        <div class="grid">
+            <div>
+                <p><strong>OS:</strong> <span id="os-value">{{ server.os }}</span> <button class="btn btn-edit" onclick="editField('os', '{{ server.os }}')">Edit</button></p>
+                <p><strong>IP:</strong> <span id="ip-value">{{ server.ip }}</span> <button class="btn btn-edit" onclick="editField('ip', '{{ server.ip }}')">Edit</button></p>
+                <p><strong>Name:</strong> <span id="name-value">{{ server.name }}</span> <button class="btn btn-edit" onclick="editField('name', '{{ server.name }}')">Edit</button></p>
+            </div>
+            {% if server.agent %}
+            <div class="card stats-card">
+                <h3>Agent Health</h3>
+                <p><strong>Status:</strong> {{ server.agent.status }}</p>
+                <p><strong>Last Seen:</strong> {{ server.agent.last_seen.strftime('%Y-%m-%d %H:%M:%S') if server.agent.last_seen else 'Never' }}</p>
+                <p><strong>CPU Usage:</strong> {{ "%.1f" | format(server.agent.cpu_usage) if server.agent.cpu_usage is not none else '0.0' }}%</p>
+                <p><strong>RAM Usage:</strong> {{ "%.1f" | format(server.agent.ram_usage) if server.agent.ram_usage is not none else '0.0' }}%</p>
+                <p><strong>Disk Usage:</strong> {{ "%.1f" | format(server.agent.disk_usage) if server.agent.disk_usage is not none else '0.0' }}%</p>
+            </div>
+            {% else %}
+            <div class="card" style="background: #fff7ed;">
+                <p>Agent not registered for this server.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Job History</h2>
+        {% if server.jobs %}
+            {% for job in server.jobs|sort(attribute='created_at', reverse=True) %}
+            <div class="job-item" id="job-{{ job.pid }}">
+                <div style="display: flex; justify-content: space-between;">
+                    <strong>{{ job.script.name if job.script else 'Unknown Script' }}</strong>
+                    <span class="job-status status-{{ job.status }}">{{ job.status }}</span>
+                </div>
+                <div style="font-size: 0.85rem; color: #666; margin: 5px 0;">
+                    Created: {{ job.created_at.strftime('%H:%M:%S') }} 
+                    {% if job.finished_at %}| Finished: {{ job.finished_at.strftime('%H:%M:%S') }}{% endif %}
+                </div>
+                {% if job.output %}
+                <details {% if loop.first %}open{% endif %}>
+                    <summary style="cursor: pointer; color: #3b82f6;">View Terminal Output</summary>
+                    <pre>{{ job.output }}</pre>
+                </details>
+                {% elif job.status == 'running' or job.status == 'queued' %}
+                <div style="font-size: 0.85rem; color: #3b82f6; font-style: italic;">
+                    Waiting for output... (Auto-refreshes in 5s)
+                    <script>
+                        setTimeout(function() {
+                            if (window.location.hash === '#job-{{ job.pid }}') {
+                                window.location.reload();
+                            }
+                        }, 5000);
+                    </script>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No jobs recorded for this server.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function editField(field, currentValue) {
+        const newValue = prompt("Enter new value for " + field, currentValue);
+        if (newValue === null) return;
+
+        fetch('/update/{{ server.pid }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ field: field, value: newValue })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById(`${field}-value`).textContent = data.value;
+            } else {
+                alert(data.error || "Update Failed");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,506 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+
+{% block content %}
+<style>
+  .page-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+    font-family: Arial, sans-serif;
+    color: #1f2937;
+  }
+
+  .hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 20px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
+  }
+
+  .hero h1 {
+    margin: 0;
+    font-size: 2rem;
+  }
+
+  .hero p {
+    margin: 6px 0 0;
+    opacity: 0.95;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    font-weight: 600;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.4fr 0.9fr;
+    gap: 20px;
+  }
+
+  .card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    padding: 20px;
+  }
+
+  .card h2 {
+    margin-top: 0;
+    font-size: 1.2rem;
+  }
+
+  .server-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .server-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #f9fafb;
+  }
+
+  .server-main h3 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+  }
+
+  .server-meta {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .stats-summary {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #4b5563;
+  }
+
+  .stat-item {
+    background: #edf2f7;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+  
+  .status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  
+  .status-online { background: #10b981; }
+  .status-offline { background: #ef4444; }
+
+  .btn {
+    display: inline-block;
+    padding: 9px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .btn-primary {
+    background: #2563eb;
+    color: white;
+  }
+
+  .btn-secondary {
+    background: #6b7280;
+    color: white;
+  }
+
+  .btn-danger {
+    background: #dc2626;
+    color: white;
+  }
+
+  .empty {
+    padding: 18px;
+    background: #f9fafb;
+    border: 1px dashed #d1d5db;
+    border-radius: 12px;
+    color: #6b7280;
+  }
+
+  .form-grid {
+    display: grid;
+    gap: 14px;
+    margin-top: 12px;
+  }
+
+  .form-grid input {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+  }
+
+  .form-grid input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .small-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .small-link:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .server-item {
+      flex-direction: column;
+    }
+
+    .hero {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+<style>
+  .form-grid {
+    display: grid;
+    gap: 14px;
+    margin-top: 12px;
+  }
+
+  .form-grid input,
+  .form-grid select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    background: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .form-grid input:focus,
+  .form-grid select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+
+  .select-wrap {
+    position: relative;
+  }
+
+  .select-wrap select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 42px;
+    cursor: pointer;
+  }
+
+  .select-wrap::after {
+    content: "▾";
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-10%);
+    color: #6b7280;
+    pointer-events: none;
+    font-size: 0.9rem;
+  }
+</style>
+<div class="page-wrap">
+  <div class="hero">
+    <div>
+      <h1>Server Management</h1>
+      <p>Track your Windows and Linux servers from one place.</p>
+    </div>
+    <div class="badge">
+      {{ servers|length }} server{% if servers|length != 1 %}s{% endif %}
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Servers</h2>
+
+      {% if servers and servers|length > 0 %}
+        <div class="server-list">
+          {% for server in servers %}
+            <div class="server-item">
+              <div class="server-main">
+                <h3>
+                  <span class="status-indicator {{ 'status-online' if server.agent and server.agent.status == 'ONLINE' else 'status-offline' }}"></span>
+                  {{ server.name }}
+                </h3>
+                <p class="server-meta">
+                  <strong>OS:</strong> {{ server.os }}<br>
+                  {% if server.ip %}
+                    <strong>IP:</strong> {{ server.ip }}<br>
+                  {% endif %}
+                </p>
+                {% if server.agent %}
+                  <div class="stats-summary">
+                    <span class="stat-item">CPU: {{ "%.1f" | format(server.agent.cpu_usage) if server.agent.cpu_usage is not none else '0.0' }}%</span>
+                    <span class="stat-item">RAM: {{ "%.1f" | format(server.agent.ram_usage) if server.agent.ram_usage is not none else '0.0' }}%</span>
+                    <span class="stat-item">Disk: {{ "%.1f" | format(server.agent.disk_usage) if server.agent.disk_usage is not none else '0.0' }}%</span>
+                  </div>
+                {% else %}
+                  <p class="server-meta" style="color: #9ca3af;">Agent not registered</p>
+                {% endif %}
+              </div>
+
+              <div class="actions">
+                <a class="btn btn-secondary" href="{{ url_for('details', pid=server.pid) }}">Details</a>
+                <button class="btn btn-primary" onclick="openRunScriptModal('{{ server.pid }}', '{{ server.name }}', '{{ server.os }}')">Run Script</button>
+                <button class="btn btn-danger" onclick="deleteServer('{{ server.pid }}')">Delete</button>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty">
+          No servers have been added yet.
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h2>How to Add a Server</h2>
+      <p>Servers are added automatically once the management agent is installed and connected.</p>
+      
+      <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem;">
+        <strong>Quick Steps:</strong>
+        <ol style="padding-left: 20px; margin-top: 8px;">
+          <li>Install <code>requests</code> and <code>psutil</code> on the target server.</li>
+          <li>Configure <code>server_url</code> and <code>api_key</code> in the agent's <code>config.json</code>.</li>
+          <li>Run the agent (<code>core.py</code>) or register it as a service.</li>
+        </ol>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="showInstallInstructions()" style="width: 100%; text-align: center;">View Detailed Instructions</button>
+      </div>
+
+      <!-- Run Script Modal -->
+      <div id="runScriptModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+          <span class="close" onclick="closeRunScriptModal()">&times;</span>
+          <h2 id="runScriptModalTitle">Run Script</h2>
+          <hr>
+          <div class="form-grid">
+            <input type="hidden" id="modal_server_id">
+            <div class="select-wrap">
+              <label for="modal_script_id" style="display:block; margin-bottom:8px;">Select Script</label>
+              <select id="modal_script_id">
+                <option value="">-- Select a Script --</option>
+                {% for script in available_scripts %}
+                  <option value="{{ script.pid }}">{{ script.name }} (ID: {{ script.pid }}) - [{{ script.os_taget }}]</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div style="margin-top: 10px;">
+              <button class="btn btn-primary" onclick="submitRunScript()" style="width: 100%;">Run Now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Installation Instructions Modal -->
+      <div id="installModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="hideInstallInstructions()">&times;</span>
+          <h2>Agent Installation Instructions</h2>
+          <hr>
+          <h3>1. Prerequisites</h3>
+          <p>Python 3.x is required on the target server.</p>
+          <pre>pip install requests psutil</pre>
+          
+          <h3>2. Configuration</h3>
+          <p>Create a <code>config.json</code> file in the following location:</p>
+          <ul>
+            <li><strong>Linux:</strong> <code>/etc/agent/config.json</code></li>
+            <li><strong>Windows:</strong> <code>C:\ProgramData\Agent\config.json</code></li>
+          </ul>
+          <p><strong>Example Content:</strong></p>
+          <pre>{
+  "server_url": "{{ request.url_root.rstrip('/') }}",
+  "api_key": "default_secret_key"
+}</pre>
+          
+          <h3>3. Run Agent</h3>
+          <p>Copy the <code>agent/</code> folder to the target server and run:</p>
+          <pre>python core.py</pre>
+          <p>Or use <code>register_service.py</code> to install as a background service.</p>
+        </div>
+      </div>
+
+      <style>
+        .modal {
+          display: none;
+          position: fixed;
+          z-index: 1000;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+          background-color: #fff;
+          margin: 5% auto;
+          padding: 30px;
+          border-radius: 12px;
+          width: 70%;
+          max-width: 800px;
+          max-height: 85vh;
+          overflow-y: auto;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+          position: relative;
+        }
+        .close {
+          position: absolute;
+          right: 20px;
+          top: 15px;
+          color: #aaa;
+          font-size: 28px;
+          font-weight: bold;
+          cursor: pointer;
+        }
+        .close:hover { color: #000; }
+        .modal-content h3 { margin-top: 20px; color: #2563eb; }
+        .modal-content pre { background: #f4f4f5; padding: 12px; border-radius: 6px; font-family: monospace; }
+      </style>
+
+      <script>
+        function showInstallInstructions() {
+          document.getElementById('installModal').style.display = 'block';
+        }
+        function hideInstallInstructions() {
+          document.getElementById('installModal').style.display = 'none';
+        }
+      </script>
+      
+      <div style="margin-top: 20px; text-align: center;">
+        <a class="small-link" href="{{ url_for('scripts_summary') }}">Go to Scripts Summary</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function openRunScriptModal(serverPid, serverName, serverOs) {
+    document.getElementById('modal_server_id').value = serverPid;
+    document.getElementById('runScriptModalTitle').textContent = `Run Script on ${serverName}`;
+    document.getElementById('runScriptModal').style.display = 'block';
+  }
+
+  function closeRunScriptModal() {
+    document.getElementById('runScriptModal').style.display = 'none';
+  }
+
+  function submitRunScript() {
+    const serverPid = document.getElementById('modal_server_id').value;
+    const scriptId = document.getElementById('modal_script_id').value;
+
+    if (!scriptId) {
+      alert('Please select a script.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('server_id', serverPid);
+    formData.append('script_id', scriptId);
+
+    fetch('/run_script', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('Script queued successfully! Job ID: ' + data.job_id);
+        window.location.href = '/details/' + serverPid + '#job-' + data.job_id;
+      } else {
+        alert('Error: ' + data.error);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Failed to queue script.');
+    });
+  }
+
+  window.onclick = function(event) {
+    let installModal = document.getElementById('installModal');
+    let runModal = document.getElementById('runScriptModal');
+    if (event.target == installModal) {
+      installModal.style.display = 'none';
+    }
+    if (event.target == runModal) {
+      runModal.style.display = 'none';
+    }
+  }
+
+  function deleteServer(pid) {
+    fetch('{{ url_for("delete", pid="") }}' + pid, {
+      method: 'DELETE'
+    }).then(response => {
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        console.error('Failed to delete item with pid: ', pid);
+      }
+    }).catch(error => console.error('Error during fetching:', error));
+  }
+</script>
+{% endblock %}
